@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+}
+
+#log {
+    width: 550px;
+    height: 100%;
+    color: black;
+    bottom: 0;
+    right: 0;
+    font-size: 12px;
+    text-align: left;
+    background-color: white;
+    position: absolute;
+}
+
+#board {
+    width: 720px;
+    height: 720px;
+    background-color: white;
+    display: block;
+    margin: 0 auto;
+}
+
+#winnerBox {
+    display: none;
+    position: absolute;
+    top: 150px;
+    left: 0;
+    right: 0;
+}
