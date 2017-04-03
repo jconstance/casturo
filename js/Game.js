@@ -61,15 +61,23 @@ var Game = function () {
  * @param playerId
  * @returns {Player} Player information
  */
-Game.prototype.joinGame = function (playerId) {
-    var randomStart = this.validStarts.splice(Math.floor(Math.random() * this.validStarts.length), 1)[0];
+Game.prototype.joinGame = function (playerId, nonRandomStart=false) {
+    var position;
+
+    if (nonRandomStart === true) {
+        position = this.nodes[this.validStarts[0][0]][this.validStarts[0][1]];
+    } else {
+        var randomStart = this.validStarts.splice(Math.floor(Math.random() * this.validStarts.length), 1)[0];
+        position = this.nodes[randomStart[0]][randomStart[1]];
+    }
 
     var player = {
         id: playerId,
         color: this.possibleColors.shift(),
-        position: this.nodes[randomStart[0]][randomStart[1]],
-        prevPosition: this.nodes[randomStart[0]][randomStart[1]],
-        cards: this._drawCards(3)
+        position: position,
+        prevPosition: position,
+        cards: this._drawCards(3),
+        path: [position]
     };
 
     this.playerLookup[playerId] = player;
@@ -240,11 +248,15 @@ Game.prototype._updatePlayers = function () {
     _.each(this.players, function (player) {
         Logger.log('player is at ' + player.position.x + ',' + player.position.y)
 
+        player.moves = [player.position];
+
         var possibleMoves = _.difference(player.position.edges, [player.position, player.prevPosition]);
         while (possibleMoves.length > 0) {
             Logger.log('player moves to ' + possibleMoves[0].x + ', ' + possibleMoves[0].y);
             player.prevPosition = player.position;
             player.position = possibleMoves[0];
+            player.moves.push(player.position);
+            player.path.push(player.position);
             possibleMoves = _.difference(player.position.edges, [player.position, player.prevPosition]);
 
             if (this._isEdgeNode(player.position)) {
