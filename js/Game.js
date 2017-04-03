@@ -240,11 +240,14 @@ Game.prototype._updatePlayers = function () {
     _.each(this.players, function (player) {
         Logger.log('player is at ' + player.position.x + ',' + player.position.y)
 
+        player.moves = [player.position];
+
         var possibleMoves = _.difference(player.position.edges, [player.position, player.prevPosition]);
         while (possibleMoves.length > 0) {
             Logger.log('player moves to ' + possibleMoves[0].x + ', ' + possibleMoves[0].y);
             player.prevPosition = player.position;
             player.position = possibleMoves[0];
+            player.moves.push(player.position);
             possibleMoves = _.difference(player.position.edges, [player.position, player.prevPosition]);
 
             if (this._isEdgeNode(player.position)) {

@@ -183,3 +183,58 @@ createSvg = function(x,y) {
 translateNodePosToBoardPos = function(pos) {
     return [pos[0] * (cardWidth / 3), pos[1] * (cardHeight / 3)]
 }
+
+createPlayerPath = function(moves, width, color) {
+    var definition = "";
+    var prevMove = moves.shift();
+
+    _.every(moves, function(move) {
+        Logger.log(move);
+        var pos = translateNodePosToBoardPos([move.x, move.y]);
+        var prevPos = translateNodePosToBoardPos([prevMove.x, prevMove.y]);
+        var centerPosX = Math.floor((move.x + prevMove.x) / 2 / 3) * 3;
+        var centerPosY = Math.floor((move.y + prevMove.y) / 2 / 3) * 3;
+
+        var origin = _.difference(prevMove.edges, [prevMove, move]);
+
+        if (move.x == 0) {
+            centerPosX += 1.5;
+        } else if (move.x == 18 && prevMove.x == 18) {
+            centerPosX -= 1.5;
+        } else if (move.x == prevMove.x && move.x % 3 == 0 && move.x - origin[0].x < 0) {
+            centerPosX -= 1.5;
+        } else {
+            centerPosX += 1.5;
+        }
+
+        if (move.y == 0) {
+            centerPosY += 1.5;
+        } else if (move.y == 18 && prevMove.y == 18) {
+            centerPosY -= 1.5;
+        } else if (move.y == prevMove.y && move.y % 3 == 0 && move.y - origin[0].y < 0) {
+            centerPosY -= 1.5;
+        } else {
+            centerPosY += 1.5;
+        }
+
+        var centerPos = translateNodePosToBoardPos(
+            [
+                centerPosX,
+                centerPosY
+            ]
+        );
+
+        definition += "M "+prevPos[0]+" "+prevPos[1]+" Q "+centerPos[0]+" "+centerPos[1]+" "+pos[0]+" "+pos[1]+" ";
+        Logger.log(definition);
+        prevPrevMove = prevMove;
+        prevMove = move;
+        return true;
+    });
+
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttributeNS(null, 'd', definition);
+    path.setAttributeNS(null, 'stroke-width', width);
+    path.setAttributeNS(null, 'stroke', color);
+    path.setAttributeNS(null, 'fill', 'transparent');
+    return path;
+}

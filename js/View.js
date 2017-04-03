@@ -36,14 +36,38 @@ View.prototype.drawBoard = function (board) {
 
 View.prototype.drawPlayers = function (players) {
     _.each(players, function (player) {
-        var playerPos = translateNodePosToBoardPos([player.position.x, player.position.y]);
+        var playerIcon;
+        if (player.moves.length > 1) {
+            playerIcon = createCircle(0, 0, 10, player.color, '1px', 'black');
 
-        var playerIcon = createCircle(playerPos[0], playerPos[1], 10, player.color, '1px', 'black');
+            var motionPath = createPlayerPath(player.moves, "2px", player.color)
+            motionPath.setAttribute('id', 'player-path-' + player.id.substring(1));
+
+            var animation = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+            animation.setAttributeNS(null, 'begin', 'indefinite');
+            animation.setAttributeNS(null, 'dur', '2s');
+            animation.setAttributeNS(null, 'repeatCount', '1');
+            animation.setAttributeNS(null, 'fill', 'freeze');
+
+            var mpath = document.createElementNS('http://www.w3.org/2000/svg', 'mpath');
+            mpath.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#player-path-' + player.id.substring(1));
+
+            animation.appendChild(mpath);
+            playerIcon.appendChild(animation);
+
+            document.getElementById('board').appendChild(motionPath);
+        } else {
+            var playerPos = translateNodePosToBoardPos([player.position.x, player.position.y]);
+            playerIcon = createCircle(playerPos[0], playerPos[1], 10, player.color, '1px', 'black');
+        }
 
         playerIcon.setAttribute('id', 'player-id-' + player.id.substring(1));
         playerIcon.setAttribute('class', 'player-icon');
 
         document.getElementById('board').appendChild(playerIcon);
+        if (animation) {
+            animation.beginElement();
+        }
     })
 };
 
