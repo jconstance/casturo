@@ -3,7 +3,15 @@ View = function () {
 };
 
 View.prototype.drawGame = function (game) {
-    $("#board, #statusBoard").empty();
+    var board = document.getElementById('board');
+    while (board.firstChild) {
+        board.removeChild(board.firstChild);
+    }
+
+    var statusBoard = document.getElementById('statusBoard');
+    while (statusBoard.firstChild) {
+        statusBoard.removeChild(statusBoard.firstChild);
+    }
 
     this.drawBoard(game.board);
     this.drawPlayers(_.values(game.playerLookup));
