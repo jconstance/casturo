@@ -62,32 +62,36 @@ var Game = function () {
  * @returns {Player} Player information
  */
 Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
-    var position;
-    var playerName = extraData.name || "Unknown";
-
-    if (nonRandomStart === true) {
-        position = this.nodes[this.validStarts[0][0]][this.validStarts[0][1]];
+    if (this.playerLookup[playerId]) {
+        return this.playerLookup[playerId];
     } else {
-        var randomStart = this.validStarts.splice(Math.floor(Math.random() * this.validStarts.length), 1)[0];
-        position = this.nodes[randomStart[0]][randomStart[1]];
+        var position;
+        var playerName = extraData.name || "Unknown";
+
+        if (nonRandomStart === true) {
+            position = this.nodes[this.validStarts[0][0]][this.validStarts[0][1]];
+        } else {
+            var randomStart = this.validStarts.splice(Math.floor(Math.random() * this.validStarts.length), 1)[0];
+            position = this.nodes[randomStart[0]][randomStart[1]];
+        }
+
+        var player = {
+            id: playerId,
+            name: playerName,
+            color: this.possibleColors.shift(),
+            position: position,
+            prevPosition: position,
+            cards: this._drawCards(3),
+            path: [position]
+        };
+
+        this.playerLookup[playerId] = player;
+        this.players.push(player);
+
+        this._updatePlayers();
+
+        return player;
     }
-
-    var player = {
-        id: playerId,
-        name: playerName,
-        color: this.possibleColors.shift(),
-        position: position,
-        prevPosition: position,
-        cards: this._drawCards(3),
-        path: [position]
-    };
-
-    this.playerLookup[playerId] = player;
-    this.players.push(player);
-
-    this._updatePlayers();
-
-    return player;
 };
 
 /**
