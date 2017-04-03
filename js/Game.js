@@ -61,8 +61,9 @@ var Game = function () {
  * @param playerId
  * @returns {Player} Player information
  */
-Game.prototype.joinGame = function (playerId, nonRandomStart=false) {
+Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
     var position;
+    var playerName = extraData.name || "Unknown";
 
     if (nonRandomStart === true) {
         position = this.nodes[this.validStarts[0][0]][this.validStarts[0][1]];
@@ -73,6 +74,7 @@ Game.prototype.joinGame = function (playerId, nonRandomStart=false) {
 
     var player = {
         id: playerId,
+        name: playerName,
         color: this.possibleColors.shift(),
         position: position,
         prevPosition: position,

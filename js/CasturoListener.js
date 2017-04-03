@@ -10,7 +10,7 @@ CasturoListener = function (gameManager) {
 CasturoListener.prototype.onPlayerAvailable = function (event) {
     Logger.log('Player ' + event.playerInfo.playerId + ' is available');
 
-    var player = this.game.joinGame(event.playerInfo.playerId);
+    var player = this.game.joinGame(event.playerInfo.playerId, event.requestExtraMessageData || {});
 
     event.resultExtraMessageData = {
         activePlayerId: this.game.getCurrentPlayer().id,
