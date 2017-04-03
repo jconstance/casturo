@@ -3,10 +3,19 @@ View = function () {
 };
 
 View.prototype.drawGame = function (game) {
-    $("#board").empty();
+    var board = document.getElementById('board');
+    while (board.firstChild) {
+        board.removeChild(board.firstChild);
+    }
+
+    var statusBoard = document.getElementById('statusBoard');
+    while (statusBoard.firstChild) {
+        statusBoard.removeChild(statusBoard.firstChild);
+    }
 
     this.drawBoard(game.board);
     this.drawPlayers(_.values(game.playerLookup));
+    this.drawStatus(_.values(game.playerLookup));
 
     if (game.isGameOver() && game.getWinners().length > 0) {
         document.querySelector('#winnerBox').style.display = 'block';
@@ -35,6 +44,7 @@ View.prototype.drawBoard = function (board) {
 };
 
 View.prototype.drawPlayers = function (players) {
+    var board = document.getElementById('board');
     _.each(players, function (player) {
         var playerPos = translateNodePosToBoardPos([player.position.x, player.position.y]);
         var playerIcon;
@@ -68,7 +78,7 @@ View.prototype.drawPlayers = function (players) {
             animation.appendChild(mpath);
             playerIcon.appendChild(animation);
 
-            document.getElementById('board').appendChild(motionPath);
+            board.appendChild(motionPath);
         } else {
             playerIcon = createCircle(playerPos[0], playerPos[1], 10, player.color, '1px', 'black');
         }
@@ -76,10 +86,43 @@ View.prototype.drawPlayers = function (players) {
         playerIcon.setAttribute('id', 'player-id-' + player.id.substring(1));
         playerIcon.setAttribute('class', 'player-icon');
 
-        document.getElementById('board').appendChild(playerIcon);
+        board.appendChild(playerIcon);
         if (animation) {
             animation.beginElement();
         }
+    })
+};
+
+View.prototype.drawStatus = function (players) {
+    var statusBoard = document.getElementById('statusBoard');
+
+    var icons = {
+        'waiting': '&#8987;',
+        'inactive': '&#9675;',
+        'active': '&#9679;',
+        'dead': '&#128128;',
+        'winner': '&#127775;'
+    }
+
+    _.each(players, function (player) {
+        var colorSquare = document.createElement('div');
+        colorSquare.setAttribute('class', 'player-status-square');
+        colorSquare.style.backgroundColor = player.color;
+
+        var name = document.createTextNode(player.name);
+
+        var statusIcon = document.createElement('div');
+        statusIcon.setAttribute('class', 'player-status-icon');
+        statusIcon.innerHTML = icons[player.status];
+
+        var playerStatusContainer = document.createElement('div');
+        playerStatusContainer.setAttribute('class', 'player-status');
+
+        playerStatusContainer.appendChild(colorSquare);
+        playerStatusContainer.appendChild(name);
+        playerStatusContainer.appendChild(statusIcon);
+
+        statusBoard.appendChild(playerStatusContainer);
     })
 };
 

@@ -61,31 +61,38 @@ var Game = function () {
  * @param playerId
  * @returns {Player} Player information
  */
-Game.prototype.joinGame = function (playerId, nonRandomStart=false) {
-    var position;
-
-    if (nonRandomStart === true) {
-        position = this.nodes[this.validStarts[0][0]][this.validStarts[0][1]];
+Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
+    if (this.playerLookup[playerId]) {
+        return this.playerLookup[playerId];
     } else {
-        var randomStart = this.validStarts.splice(Math.floor(Math.random() * this.validStarts.length), 1)[0];
-        position = this.nodes[randomStart[0]][randomStart[1]];
+        var position;
+        var playerName = extraData.name || "Unknown";
+
+        if (nonRandomStart === true) {
+            position = this.nodes[this.validStarts[0][0]][this.validStarts[0][1]];
+        } else {
+            var randomStart = this.validStarts.splice(Math.floor(Math.random() * this.validStarts.length), 1)[0];
+            position = this.nodes[randomStart[0]][randomStart[1]];
+        }
+
+        var player = {
+            id: playerId,
+            name: playerName,
+            color: this.possibleColors.shift(),
+            position: position,
+            prevPosition: position,
+            cards: this._drawCards(3),
+            path: [position],
+            status: this.players.length == 0 ? 'active' : 'inactive'
+        };
+
+        this.playerLookup[playerId] = player;
+        this.players.push(player);
+
+        this._updatePlayers();
+
+        return player;
     }
-
-    var player = {
-        id: playerId,
-        color: this.possibleColors.shift(),
-        position: position,
-        prevPosition: position,
-        cards: this._drawCards(3),
-        path: [position]
-    };
-
-    this.playerLookup[playerId] = player;
-    this.players.push(player);
-
-    this._updatePlayers();
-
-    return player;
 };
 
 /**
@@ -168,6 +175,7 @@ Game.prototype.playCard = function (playerId, cardId, rotations) {
     }
 
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    this.getCurrentPlayer().status = 'active';
 
     this.turn++;
 };
@@ -245,12 +253,18 @@ Game.prototype._getCard = function (id) {
  * @private
  */
 Game.prototype._updatePlayers = function () {
+    var playersWhoMoved = [];
     _.each(this.players, function (player) {
         Logger.log('player is at ' + player.position.x + ',' + player.position.y)
 
         player.moves = [player.position];
 
         var possibleMoves = _.difference(player.position.edges, [player.position, player.prevPosition]);
+
+        if (possibleMoves.length > 0) {
+            playersWhoMoved.push(player);
+        }
+
         while (possibleMoves.length > 0) {
             Logger.log('player moves to ' + possibleMoves[0].x + ', ' + possibleMoves[0].y);
             player.prevPosition = player.position;
@@ -261,16 +275,20 @@ Game.prototype._updatePlayers = function () {
 
             if (this._isEdgeNode(player.position)) {
                 Logger.log('Player ' + player.id + ' lost!!');
+                player.status = 'dead';
                 this.players.splice(this.players.indexOf(player), 1);
                 this.currentPlayerIndex = this.currentPlayerIndex % this.players.length;
+            } else {
+                player.status = 'inactive';
             }
         }
     }, this);
 
-    if (this.players.length == 1) {
-        Logger.log('Player ' + this.players[0] + ' wins');
-    } else if (this.players.length == 0) {
-        Logger.log('Everyone losses!');
+    if (this.isGameOver()) {
+        _.each(playersWhoMoved, function(player) {
+            Logger.log('Player ' + player.name + ' wins');
+            player.status = 'winner';
+        })
     }
 };
 
