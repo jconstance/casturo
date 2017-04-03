@@ -253,12 +253,18 @@ Game.prototype._getCard = function (id) {
  * @private
  */
 Game.prototype._updatePlayers = function () {
+    var playersWhoMoved = [];
     _.each(this.players, function (player) {
         Logger.log('player is at ' + player.position.x + ',' + player.position.y)
 
         player.moves = [player.position];
 
         var possibleMoves = _.difference(player.position.edges, [player.position, player.prevPosition]);
+
+        if (possibleMoves.length > 0) {
+            playersWhoMoved.push(player);
+        }
+
         while (possibleMoves.length > 0) {
             Logger.log('player moves to ' + possibleMoves[0].x + ', ' + possibleMoves[0].y);
             player.prevPosition = player.position;
@@ -278,11 +284,11 @@ Game.prototype._updatePlayers = function () {
         }
     }, this);
 
-    if (this.players.length == 1) {
-        Logger.log('Player ' + this.players[0] + ' wins');
-        this.players[0].status = 'winner';
-    } else if (this.players.length == 0) {
-        Logger.log('Everyone losses!');
+    if (this.isGameOver()) {
+        _.each(playersWhoMoved, function(player) {
+            Logger.log('Player ' + player.name + ' wins');
+            player.status = 'winner';
+        })
     }
 };
 
