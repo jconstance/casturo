@@ -36,6 +36,7 @@ View.prototype.drawBoard = function (board) {
 };
 
 View.prototype.drawPlayers = function (players) {
+    var board = document.getElementById('board');
     _.each(players, function (player) {
         var playerPos = translateNodePosToBoardPos([player.position.x, player.position.y]);
         var playerIcon;
@@ -69,7 +70,7 @@ View.prototype.drawPlayers = function (players) {
             animation.appendChild(mpath);
             playerIcon.appendChild(animation);
 
-            document.getElementById('board').appendChild(motionPath);
+            board.appendChild(motionPath);
         } else {
             playerIcon = createCircle(playerPos[0], playerPos[1], 10, player.color, '1px', 'black');
         }
@@ -77,7 +78,7 @@ View.prototype.drawPlayers = function (players) {
         playerIcon.setAttribute('id', 'player-id-' + player.id.substring(1));
         playerIcon.setAttribute('class', 'player-icon');
 
-        document.getElementById('board').appendChild(playerIcon);
+        board.appendChild(playerIcon);
         if (animation) {
             animation.beginElement();
         }
