@@ -7,7 +7,7 @@ View.prototype.drawGame = function (game) {
 
     this.drawBoard(game.board);
     this.drawPlayers(_.values(game.playerLookup));
-    this.drawStatus(_.values(game.playerLookup), game.getCurrentPlayer());
+    this.drawStatus(_.values(game.playerLookup));
 
     if (game.isGameOver() && game.getWinners().length > 0) {
         document.querySelector('#winnerBox').style.display = 'block';
@@ -85,7 +85,7 @@ View.prototype.drawPlayers = function (players) {
     })
 };
 
-View.prototype.drawStatus = function (players, activePlayer) {
+View.prototype.drawStatus = function (players) {
     var statusBoard = document.getElementById('statusBoard');
 
     var icons = {
@@ -105,17 +105,7 @@ View.prototype.drawStatus = function (players, activePlayer) {
 
         var statusIcon = document.createElement('div');
         statusIcon.setAttribute('class', 'player-status-icon');
-        if (player.status == 'winner') {
-            statusIcon.innerHTML = icons['winner'];
-        } else if (player.status == 'dead') {
-            statusIcon.innerHTML = icons['dead'];
-        } else if (player.status == 'waiting') {
-            statusIcon.innerHTML = icons['waiting'];
-        } else if (player.id == activePlayer.id) {
-            statusIcon.innerHTML = icons['active'];
-        } else {
-            statusIcon.innerHTML = icons['inactive'];
-        }
+        statusIcon.innerHTML = icons[player.status];
 
         var playerStatusContainer = document.createElement('div');
         playerStatusContainer.setAttribute('class', 'player-status');

@@ -82,7 +82,8 @@ Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
             position: position,
             prevPosition: position,
             cards: this._drawCards(3),
-            path: [position]
+            path: [position],
+            status: this.players.length == 0 ? 'active' : 'inactive'
         };
 
         this.playerLookup[playerId] = player;
@@ -174,6 +175,7 @@ Game.prototype.playCard = function (playerId, cardId, rotations) {
     }
 
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    this.getCurrentPlayer().status = 'active';
 
     this.turn++;
 };
@@ -270,6 +272,8 @@ Game.prototype._updatePlayers = function () {
                 player.status = 'dead';
                 this.players.splice(this.players.indexOf(player), 1);
                 this.currentPlayerIndex = this.currentPlayerIndex % this.players.length;
+            } else {
+                player.status = 'inactive';
             }
         }
     }, this);
