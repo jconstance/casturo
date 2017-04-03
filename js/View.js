@@ -46,7 +46,7 @@ View.prototype.drawPlayers = function (players) {
 
             var animation = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
             animation.setAttributeNS(null, 'begin', 'indefinite');
-            animation.setAttributeNS(null, 'dur', '2s');
+            animation.setAttributeNS(null, 'dur', (player.moves.length * 0.75)+"s");
             animation.setAttributeNS(null, 'repeatCount', '1');
             animation.setAttributeNS(null, 'fill', 'freeze');
 
