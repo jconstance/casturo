@@ -74,6 +74,11 @@ body {
     top: 480px;
 }
 
+#qrCode img {
+    height: 100%;
+    width: auto;
+}
+
 #board {
     width: 720px;
     height: 720px;
