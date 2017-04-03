@@ -85,6 +85,8 @@ CasturoListener.prototype.onGameMessageReceived = function (event) {
         };
     }
 
+    this.view.drawGame(this.game);
+
     if (!this.game.isGameOver()) {
         this.broadcast({
             gameOver: false,
@@ -101,8 +103,6 @@ CasturoListener.prototype.onGameMessageReceived = function (event) {
             })
         });
     }
-
-    this.view.drawGame(this.game);
 };
 
 CasturoListener.prototype.onGameDataChanged = function () {
