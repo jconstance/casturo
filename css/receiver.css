@@ -32,7 +32,7 @@ body {
 #statusBoard {
     background-color: white;
     color: black;
-    height: 600px;
+    height: 480px;
     width: 240px;
     display: block;
     border: 1px solid black;
@@ -65,13 +65,13 @@ body {
     color: black;
     font-size: 12px;
     text-align: left;
-    height: 118px;
+    height: 238px;
     width: 240px;
     display: block;
     border: 1px solid black;
     position: absolute;
     left: 0px;
-    top: 600px;
+    top: 480px;
 }
 
 #board {
