@@ -263,6 +263,7 @@ Game.prototype._updatePlayers = function () {
 
             if (this._isEdgeNode(player.position)) {
                 Logger.log('Player ' + player.id + ' lost!!');
+                player.status = 'dead';
                 this.players.splice(this.players.indexOf(player), 1);
                 this.currentPlayerIndex = this.currentPlayerIndex % this.players.length;
             }
@@ -271,6 +272,7 @@ Game.prototype._updatePlayers = function () {
 
     if (this.players.length == 1) {
         Logger.log('Player ' + this.players[0] + ' wins');
+        this.players[0].status = 'winner';
     } else if (this.players.length == 0) {
         Logger.log('Everyone losses!');
     }

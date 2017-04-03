@@ -3,10 +3,11 @@ View = function () {
 };
 
 View.prototype.drawGame = function (game) {
-    $("#board").empty();
+    $("#board, #statusBoard").empty();
 
     this.drawBoard(game.board);
     this.drawPlayers(_.values(game.playerLookup));
+    this.drawStatus(_.values(game.playerLookup), game.getCurrentPlayer());
 
     if (game.isGameOver() && game.getWinners().length > 0) {
         document.querySelector('#winnerBox').style.display = 'block';
@@ -80,6 +81,49 @@ View.prototype.drawPlayers = function (players) {
         if (animation) {
             animation.beginElement();
         }
+    })
+};
+
+View.prototype.drawStatus = function (players, activePlayer) {
+    var statusBoard = document.getElementById('statusBoard');
+
+    var icons = {
+        'waiting': '&#8987;',
+        'inactive': '&#9675;',
+        'active': '&#9679;',
+        'dead': '&#128128;',
+        'winner': '&#127775;'
+    }
+
+    _.each(players, function (player) {
+        var colorSquare = document.createElement('div');
+        colorSquare.setAttribute('class', 'player-status-square');
+        colorSquare.style.backgroundColor = player.color;
+
+        var name = document.createTextNode(player.name);
+
+        var statusIcon = document.createElement('div');
+        statusIcon.setAttribute('class', 'player-status-icon');
+        if (player.status == 'winner') {
+            statusIcon.innerHTML = icons['winner'];
+        } else if (player.status == 'dead') {
+            statusIcon.innerHTML = icons['dead'];
+        } else if (player.status == 'waiting') {
+            statusIcon.innerHTML = icons['waiting'];
+        } else if (player.id == activePlayer.id) {
+            statusIcon.innerHTML = icons['active'];
+        } else {
+            statusIcon.innerHTML = icons['inactive'];
+        }
+
+        var playerStatusContainer = document.createElement('div');
+        playerStatusContainer.setAttribute('class', 'player-status');
+
+        playerStatusContainer.appendChild(colorSquare);
+        playerStatusContainer.appendChild(name);
+        playerStatusContainer.appendChild(statusIcon);
+
+        statusBoard.appendChild(playerStatusContainer);
     })
 };
 
