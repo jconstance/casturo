@@ -31,7 +31,7 @@ CasturoListener.prototype.onPlayerAvailable = function (event) {
 };
 
 CasturoListener.prototype.broadcast = function (msg) {
-    Logger.log(JSON.stringify(msg));
+//    Logger.log(JSON.stringify(msg));
     this.gameManager.sendGameMessageToAllConnectedPlayers(msg)
 };
 
