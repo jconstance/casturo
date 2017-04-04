@@ -19,7 +19,7 @@ View.prototype.drawGame = function (game) {
 
     if (game.isGameOver() && game.getWinners().length > 0) {
         document.querySelector('#winnerBox').style.display = 'block';
-        document.querySelector('#winnerBox #winnerName').innerHTML = _.pluck(game.getWinners(), 'color').join(', ');
+        document.querySelector('#winnerBox #winnerName').innerHTML = _.pluck(game.getWinners(), 'name').join(', ');
     }
 
 };
