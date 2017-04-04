@@ -14,6 +14,7 @@ CasturoListener.prototype.onPlayerAvailable = function (event) {
 
     event.resultExtraMessageData = {
         activePlayerId: this.game.getCurrentPlayer().id,
+        players: this.game._getSimplifiedPlayers(),
         player: {
             id: player.id,
             cards: player.cards,
@@ -86,18 +87,7 @@ CasturoListener.prototype.onGameMessageReceived = function (event) {
 
     this.view.drawGame(this.game);
 
-    var simplifiedPlayers = [];
-
-    _.each(this.game.players, function(player) {
-        var simplifiedPlayer = {
-            name: player.name,
-            status: player.status,
-            color: player.color,
-            id: player.id
-        };
-
-        simplifiedPlayers.push(simplifiedPlayer);
-    });
+    var simplifiedPlayers = this.game._getSimplifiedPlayers();
 
     if (!this.game.isGameOver()) {
         this.broadcast({

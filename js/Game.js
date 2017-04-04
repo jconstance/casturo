@@ -345,3 +345,14 @@ Game.prototype._drawCards = function (count) {
 
     return cards;
 };
+
+Game.prototype._getSimplifiedPlayers = function() {
+    return _.each(this.players, function(player) {
+        return {
+            name: player.name,
+            status: player.status,
+            color: player.color,
+            id: player.id
+        };
+    });
+}
