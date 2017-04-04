@@ -89,8 +89,6 @@ Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
         this.playerLookup[playerId] = player;
         this.players.push(player);
 
-        this._updatePlayers(false);
-
         return player;
     }
 };
@@ -166,7 +164,7 @@ Game.prototype.playCard = function (playerId, cardId, rotations) {
         pointTo.edges.push(pointFrom);
     }
 
-    this._updatePlayers(true);
+    this._updatePlayers();
 
     // remove the played card
     var index = _.findIndex(player.cards, function (card) {
@@ -253,7 +251,7 @@ Game.prototype._getCard = function (id) {
  * Update the players based on latest board state
  * @private
  */
-Game.prototype._updatePlayers = function (incrementActivePlayer) {
+Game.prototype._updatePlayers = function () {
     var playersWhoMoved = [];
     _.each(this.players, function (player) {
         Logger.log('player is at ' + player.position.x + ',' + player.position.y)
@@ -291,9 +289,10 @@ Game.prototype._updatePlayers = function (incrementActivePlayer) {
             Logger.log('Player ' + player.name + ' wins');
             player.status = 'winner';
         }, this)
-    } else if (incrementActivePlayer) {
-        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
     }
+
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+
 
     var curPlayer = this.getCurrentPlayer();
     if (curPlayer.status == 'inactive') {
