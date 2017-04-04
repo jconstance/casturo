@@ -77,8 +77,7 @@ CasturoListener.prototype.onGameMessageReceived = function (event) {
             cards: player.cards
         };
     } catch (e) {
-        console.log('here');
-        debugger;
+        console.log(e);
         event.resultExtraMessageData = {
             success: false,
             error: e.msg
