@@ -90,11 +90,13 @@ CasturoListener.prototype.onGameMessageReceived = function (event) {
     if (!this.game.isGameOver()) {
         this.broadcast({
             gameOver: false,
-            activePlayerId: this.game.getCurrentPlayer().id
+            activePlayerId: this.game.getCurrentPlayer().id,
+            players: this.game.players
         });
     } else {
         this.broadcast({
             gameOver: true,
+            players: this.game.players,
             winner: this.game.players.map(function (player) {
                 return {
                     id: player.id,
