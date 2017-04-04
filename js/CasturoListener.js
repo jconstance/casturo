@@ -31,7 +31,7 @@ CasturoListener.prototype.onPlayerAvailable = function (event) {
 };
 
 CasturoListener.prototype.broadcast = function (msg) {
-//    Logger.log(JSON.stringify(msg));
+    Logger.log(JSON.stringify(msg));
     this.gameManager.sendGameMessageToAllConnectedPlayers(msg)
 };
 
@@ -87,16 +87,29 @@ CasturoListener.prototype.onGameMessageReceived = function (event) {
 
     this.view.drawGame(this.game);
 
+    var simplifiedPlayers = [];
+
+    _.each(this.game.players, function(player) {
+        var simplifiedPlayer = {
+            name: player.name,
+            status: player.status,
+            color: player.color,
+            id: player.id
+        };
+
+        simplifiedPlayers.push(simplifiedPlayer);
+    });
+
     if (!this.game.isGameOver()) {
         this.broadcast({
             gameOver: false,
             activePlayerId: this.game.getCurrentPlayer().id,
-            players: this.game.players
+            players: simplifiedPlayers
         });
     } else {
         this.broadcast({
             gameOver: true,
-            players: this.game.players,
+            players: simplifiedPlayers,
             winner: this.game.players.map(function (player) {
                 return {
                     id: player.id,
