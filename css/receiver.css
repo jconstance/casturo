@@ -77,6 +77,15 @@ body {
 #qrCode img {
     height: 100%;
     width: auto;
+    z-index:0;
+    position: absolute;
+    top:0;
+}
+
+#qrCode h3 {
+    z-index: 1;
+    position: relative;
+    text-align: center;
 }
 
 #board {
