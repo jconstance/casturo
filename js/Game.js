@@ -103,12 +103,16 @@ Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
  */
 Game.prototype.playCard = function (playerId, cardId, rotations) {
     // TODO throw InvalidMoveError if move would kill player
-    // TODO throw InvalidMoveError if player plays a card they don't have
     var player = this.getCurrentPlayer();
 
     if (playerId != player.id) {
         Logger.log('Its not your turn, ' + playerId + ' Its ' + player.id + ' turn');
         throw new InvalidMoveError('Not player\'s turn');
+    }
+
+    if (_.find(player.cards, function(card) { return card.id == cardId; }) === undefined) {
+        Logger.log('Player ' + playerId + ' does not have that card. Bad player!');
+        throw new InvalidMoveError('Player does not have that card');
     }
 
     var x = Math.abs(Math.floor((player.position.x ) / 3));
