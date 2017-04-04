@@ -357,12 +357,14 @@ Game.prototype._drawCards = function (count) {
 };
 
 Game.prototype._getSimplifiedPlayers = function() {
-    return _.each(this.players, function(player) {
-        return {
+    var simplifiedPlayers = [];
+    _.each(this.players, function(player) {
+        simplifiedPlayers.push({
             name: player.name,
             status: player.status,
             color: player.color,
             id: player.id
-        };
+        });
     });
+    return simplifiedPlayers;
 }
