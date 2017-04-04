@@ -102,6 +102,8 @@ Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
  * @param {string} cardId
  */
 Game.prototype.playCard = function (playerId, cardId, rotations) {
+    this.turn++;
+
     // TODO throw InvalidMoveError if move would kill player
     var player = this.getCurrentPlayer();
 
@@ -177,11 +179,6 @@ Game.prototype.playCard = function (playerId, cardId, rotations) {
     if (newCard) {
         player.cards.push(newCard);
     }
-
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-    this.getCurrentPlayer().status = 'active';
-
-    this.turn++;
 };
 
 /**
@@ -292,7 +289,10 @@ Game.prototype._updatePlayers = function () {
         _.each(playersWhoMoved, function(player) {
             Logger.log('Player ' + player.name + ' wins');
             player.status = 'winner';
-        })
+        }, this)
+    } else {
+        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+        this.getCurrentPlayer().status = 'active';
     }
 };
 
