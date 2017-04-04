@@ -81,6 +81,7 @@ Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
             color: this.possibleColors.shift(),
             position: position,
             prevPosition: position,
+            moves: [position],
             cards: this._drawCards(3),
             path: [position],
             status: this.players.length == 0 ? 'active' : 'inactive'
@@ -91,6 +92,8 @@ Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
 
         return player;
     }
+
+    Logger.log(this.players);
 };
 
 /**
