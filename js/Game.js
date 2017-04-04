@@ -89,7 +89,7 @@ Game.prototype.joinGame = function (playerId, extraData, nonRandomStart=false) {
         this.playerLookup[playerId] = player;
         this.players.push(player);
 
-        this._updatePlayers();
+        this._updatePlayers(false);
 
         return player;
     }
@@ -166,7 +166,7 @@ Game.prototype.playCard = function (playerId, cardId, rotations) {
         pointTo.edges.push(pointFrom);
     }
 
-    this._updatePlayers();
+    this._updatePlayers(true);
 
     // remove the played card
     var index = _.findIndex(player.cards, function (card) {
@@ -253,12 +253,14 @@ Game.prototype._getCard = function (id) {
  * Update the players based on latest board state
  * @private
  */
-Game.prototype._updatePlayers = function () {
+Game.prototype._updatePlayers = function (incrementActivePlayer) {
     var playersWhoMoved = [];
     _.each(this.players, function (player) {
         Logger.log('player is at ' + player.position.x + ',' + player.position.y)
 
         player.moves = [player.position];
+
+        player.status = 'inactive';
 
         var possibleMoves = _.difference(player.position.edges, [player.position, player.prevPosition]);
 
@@ -279,21 +281,27 @@ Game.prototype._updatePlayers = function () {
                 player.status = 'dead';
                 this.players.splice(this.players.indexOf(player), 1);
                 this.currentPlayerIndex = this.currentPlayerIndex % this.players.length;
-            } else {
-                player.status = 'inactive';
             }
         }
     }, this);
 
     if (this.isGameOver()) {
+        Logger.log("Game is over");
         _.each(playersWhoMoved, function(player) {
             Logger.log('Player ' + player.name + ' wins');
             player.status = 'winner';
         }, this)
-    } else {
+    } else if (incrementActivePlayer) {
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-        this.getCurrentPlayer().status = 'active';
     }
+
+    var curPlayer = this.getCurrentPlayer();
+    if (curPlayer.status == 'inactive') {
+        curPlayer.status = 'active';
+        Logger.log("Setting "+curPlayer.id+" to active");
+    }
+
+    console.log(JSON.parse(JSON.stringify(this._getSimplifiedPlayers())));
 };
 
 /**
